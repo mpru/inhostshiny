@@ -6,6 +6,7 @@ The app is deployed at https://mpru.shinyapps.io/inhostshiny/ or can be run loca
 
 
 library(shiny)
+
 runGitHub("inhostshiny", "mpru")
 
 In this case, you should have installed the following R packages: EpiModel, phaseR, ggplot2, tidyr, dplyr, stringr and Deriv.
