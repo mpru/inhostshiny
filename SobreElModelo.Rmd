@@ -1,8 +1,5 @@
 ---
 title: "Modelo In-host: Modelo Compartimental para Infecciones Virales en Poblaciones de Células T CD4+"
-subtitle: "Trabajo Práctico para la Asignatura: Modelos Matemáticos Continuos"
-author: "Marcos Prunello"
-date: "Marzo, 2019"
 lang: "es-ar"
 output: 
     bookdown::html_document2:
@@ -18,6 +15,11 @@ editor_options:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, fig.align = "center", comment = NA, message = F)
+
+# Eliminado para latin R
+# subtitle: "Trabajo Práctico para la Asignatura: Modelos Matemáticos Continuos"
+# author: "Marcos Prunello"
+# date: "Marzo, 2019"
 ```
 
 # Introducción

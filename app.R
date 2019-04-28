@@ -95,8 +95,9 @@ ui <- fluidPage(
     sidebarLayout(
         sidebarPanel(
             
-            h3("Marcos Prunello", style = "margin-top: 0px"),
-            h3("Asignatura: Modelos Matemáticos Continuos", style = "margin-top: 0px"),
+            # Comentado para latinR
+            # h3("Marcos Prunello", style = "margin-top: 0px"),
+            # h3("Asignatura: Modelos Matemáticos Continuos", style = "margin-top: 0px"),
             helpText("Hacer click en Correr Modelo después de cambiar",
                      "los parámetros."),
             actionButton(inputId = "runMod", "Correr modelo"),
