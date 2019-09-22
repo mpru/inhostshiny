@@ -90,7 +90,7 @@ sistema <- function (t, y, parameters) {
 
 ui <- fluidPage(
     
-    titlePanel("Modelo In-host: Modelo Compartimental para Infecciones Virales en Poblaciones de Células T CD4+"),
+    titlePanel("In-Host Shiny: Modelo Compartimental para Infecciones Virales en Poblaciones de Células T CD4+"),
     withMathJax(),
     sidebarLayout(
         sidebarPanel(
@@ -154,16 +154,14 @@ ui <- fluidPage(
         
         mainPanel(
             tabsetPanel(
-                tabPanel("Sobre el modelo",
-                         includeHTML("SobreElModelo.html")
-                ), # Fin panel Sobre el modelo
+
                 
                 tabPanel("Gráficos",
-                         h4("Resultados del modelo (uso del paquete EpiModel)"),
-                         plotOutput(outputId = "MainPlot"),
+                         # h4("Resultados del modelo (uso del paquete EpiModel)"),
+                         # h4("Resultados del modelo"),
                          br(),
                          wellPanel(
-                             h4("Opciones gráficas"),
+                             # h4("Opciones gráficas"),
                              fluidRow(
                                  column(5,
                                         selectInput(inputId = "compsel",
@@ -174,11 +172,13 @@ ui <- fluidPage(
                                                                 "Tasa de aparición y eliminación de células",
                                                                 "Tamaño de la población"))))
     
-                         ) # End wellPanel
+                         ), # End wellPanel
+                         plotOutput(outputId = "MainPlot")
                 ), # End tabPanel
                 
                 tabPanel("Resumen",
-                         h4("Resumen del modelo en un tiempo específico (uso del paquete EpiModel)"),
+                         # h4("Resumen del modelo en un tiempo específico (uso del paquete EpiModel)"),
+                         h4("Resumen del modelo en un tiempo específico"),
                          helpText("Seleccionar el tiempo de interés y la cantidad
                                     de decimales para el redondeo de resultados"),
                          fluidRow(
@@ -198,7 +198,8 @@ ui <- fluidPage(
                         ), # end tabPanel Summary
                 
                 tabPanel("Datos",
-                         h4("Datos del modelo (uso del paquete EpiModel)"),
+                         # h4("Datos del modelo (uso del paquete EpiModel)"),
+                         h4("Valores arrojados por el modelo para cada unidad de tiempo"),
                          dataTableOutput("outData"),
                          fluidRow(
                              column(4,
@@ -233,7 +234,12 @@ ui <- fluidPage(
                                       value = 2),
                          dataTableOutput("outDataEq"),
                          plotOutput(outputId = "planoFases", width = "80%")
-                ) # Fin panel Plano de fases
+                ), # Fin panel Plano de fases
+                
+                tabPanel("Sobre el modelo",
+                         includeHTML("SobreElModelo.html")
+                ) # Fin panel Sobre el modelo
+                
             ) # end tabsetPanel
     ) # end mainPanel
 ) # end sidebarLayout
@@ -313,31 +319,42 @@ server <- function(input, output) {
             g = ggplot(res.x.y(), aes(x = Tiempo, y = Numero, group = Tipo, color = Tipo)) + 
                 geom_line(lwd = 1.5) + 
                 theme_bw() + 
-                theme(legend.position = "bottom")
+                labs(y = "Número de células", x = "Días") +
+                theme(legend.position = "right") +
+                ggtitle("Evolución del número de células susceptibles e infectadas a través del tiempo")
         }
         if (input$compsel == "Prevalencia") {
             g = ggplot(res.x.y.prev(), aes(x = Tiempo, y = Prevalencia, group = Tipo, color = Tipo)) + 
                 geom_line(lwd = 1.5) + 
                 theme_bw() + 
-                theme(legend.position = "bottom")
+                labs(y = "Prevalencia", x = "Días") +
+                theme(legend.position = "right") +
+                ggtitle("Prevalencia de la infección a través del tiempo")
         }
         if (input$compsel == "Incidencia") {
             g = ggplot(res(), aes(x = Tiempo, y = si.flow)) + 
                 geom_line(lwd = 1.5) + 
                 scale_y_continuous("Incidencia") +
-                theme_bw()
+                labs(y = "Incidencia", x = "Días") +
+                theme(legend.position = "right") +
+                ggtitle("Incidencia de la infección a través del tiempo")
+            
         }
         if (input$compsel == "Tasa de aparición y eliminación de células") {
             g = ggplot(res.a.d(), aes(x = Tiempo, y = Tasa)) + 
                 geom_line() + 
                 facet_grid(Direccion ~ Tipo, scales = "free") + 
-                theme_bw()
+                theme_bw() +
+                ggtitle("Tasa de aparición y eliminación de células") +
+                xlab("Día")
         }
         if (input$compsel == "Tamaño de la población") {
             g = ggplot(res(), aes(x = Tiempo, y  = num)) +
                 geom_line() +
                 scale_y_continuous("Tamaño de la población", limits = c(0, NA)) + 
-                theme_bw()
+                theme_bw() +
+                ggtitle("Tamaño de la población") +
+                xlab("Día")
         }
         g 
     }, height = 400, width = 600)
@@ -363,7 +380,7 @@ server <- function(input, output) {
             "\n    Nuevas células no infectadas: ", res2$ax.flow,
             "\n    Nuevas células infectadas: ", res2$ay.flow,
             "\n    Células no infectadas muertas: ", res2$ds.flow,
-            "\n    Células no infectadas muertas: ", res2$di.flow
+            "\n    Células infectadas muertas: ", res2$di.flow
         )
         writeLines(lineas)
     })

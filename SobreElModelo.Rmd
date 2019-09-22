@@ -3,7 +3,7 @@ title: "Modelo In-host: Modelo Compartimental para Infecciones Virales en Poblac
 lang: "es-ar"
 output: 
     bookdown::html_document2:
-        toc: true
+        toc: false
         toc_depth: 3
         toc_float: true
         number_sections: true
@@ -40,7 +40,7 @@ Los valores por default con los que se inicia la aplicación al ejecutarse corre
 
 # Modelización Matemática de Enfermedades Infecciosas
 
-Una enfermedad es *infecciosa* si el agente causante, por ejemplo, un virus o bacteria, puede ser transmitido de un individuo a otro a través del algún medio como puede ser contacto físico directo, gotas de la vía respiratoria transportadas en el aire, agua, comida, vectores o de madre a recién nacido.
+Una enfermedad es *infecciosa* si el agente causante, por ejemplo, un virus o bacteria, puede ser transmitido de un individuo a otro a través de algún medio como puede ser contacto físico directo, gotas de la vía respiratoria transportadas en el aire, agua, comida, vectores o de madre a recién nacido.
 
 El objetivo de la modelización matemática de una enfermedad infecciosa es describir el *proceso de transmisión* de la enfermedad, que generalmente se describe de la siguiente forma: cuando individuos infectados son introducidos en una población susceptible, la enfermedad se pasa a otros individuos a través de sus modos de transmisión, expandiéndose en la población. Un individuo puede ser asintomático durante una etapa temprana de la infección, para ser diagnosticado como un *caso* más tarde, luego de la aparición de los síntomas. Individuos infectados pueden o no recuperarse, ya sea por tratamiento o como respuesta de su sistema inmune, y pueden ganar cierto grado de inmunidad contra una posible re infección.
 Dependiendo de los alcances y velocidad de la expansión y los mecanismos de recuperación e inmunización, una infección puede dar lugar a un *brote de la enfermedad*, una *epidemia*, una *endemia* o una *pandemia*.

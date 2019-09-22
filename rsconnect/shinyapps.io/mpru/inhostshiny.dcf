@@ -1,0 +1,10 @@
+name: inhostshiny
+title:
+username:
+account: mpru
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 799575
+bundleId: 2044745
+url: https://mpru.shinyapps.io/inhostshiny/
+when: 1556467771.55011
