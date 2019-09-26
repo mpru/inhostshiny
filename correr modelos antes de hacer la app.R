@@ -39,7 +39,9 @@ planoFases <- flowField(sistema,
                         ylim = c(0, 1000),
                         parameters = params,
                         points = 50,
-                        add = F)
+                        add = F, 
+                        xlab = "Nro de células no infectadas (x)",
+                        ylab = "Nro de células infectadas (y)")
 
 # Isoclinas nulas
 sistemaNullclines  <- nullclines(sistema, xlim = c(0, 1000), ylim = c(0, 1000), parameters = params)

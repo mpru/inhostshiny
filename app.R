@@ -104,11 +104,11 @@ ui <- fluidPage(
             
             h4("Conditiones iniciales", style = "margin-top: 25px"),
             numericInput(inputId = "x",
-                         label = "Población susceptible",
+                         label = "Población susceptible (células/mm^3)",
                          value = 1000,
                          min = 0),
             numericInput(inputId = "y",
-                         label = "Población infectada",
+                         label = "Población infectada (células/mm^3)",
                          value = 50,
                          min = 0),
             h4("Tiempo", style = "margin-top: 25px"),
@@ -154,6 +154,31 @@ ui <- fluidPage(
         
         mainPanel(
             tabsetPanel(
+                
+                tabPanel("Análisis",
+                         h4("Resultados análiticos"),
+                         verbatimTextOutput(outputId = "analisis"),
+                         plotOutput(outputId = "f1f2", width = "80%"),
+                         h4("Resultados empíricos (arranques aleatorios)"),
+                         helpText("Advertencia: se ha automatizado la búsqueda de puntos de
+                                  equilibrio con arranques aleatorios, si no se encuentran en 
+                                  los primeros 500 intentos abandona la búsqueda. Hacer click
+                                  nuevamente en Correr Modelo para darle otra oportunidad. 
+                                  Esto debe ser mejorado."),
+                         # helpText("Advertencia: se ha automatizado la búsqueda de puntos de
+                         #          equilibrio con arranques aleatorios, pero falta implementar
+                         #          un control para informar sólo puntos que sean de interés en
+                         #          el problema, es decir, dentro del rango de tiempo estudiado.
+                         #          Por esta razón podrían aparecer puntos con coordenadas negativas,
+                         #          por ejemplo."),
+                         numericInput(inputId = "cifrasEq",
+                                      label = "Cantidad de decimales",
+                                      min = 0,
+                                      max = 8,
+                                      value = 2),
+                         dataTableOutput("outDataEq"),
+                         plotOutput(outputId = "planoFases", width = "80%")
+                         ), # Fin panel Plano de fases
 
                 
                 tabPanel("Gráficos",
@@ -211,30 +236,6 @@ ui <- fluidPage(
                                         label = "Descargar datos")
                 ), # end tabPanel Data
 
-                tabPanel("Análisis",
-                         h4("Resultados análiticos según las relaciones entre los parámetros descriptas en el libro de Li"),
-                         verbatimTextOutput(outputId = "analisis"),
-                         plotOutput(outputId = "f1f2", width = "80%"),
-                         h4("Resultados obtenidos a través de la automatización del análisis del modelo con el paquete phaseR."),
-                         helpText("Advertencia: se ha automatizado la búsqueda de puntos de
-                                  equilibrio con arranques aleatorios, si no se encuentran en 
-                                  los primeros 500 intentos abandona la búsqueda. Hacer click
-                                  nuevamente en Correr Modelo para darle otra oportunidad. 
-                                  Esto debe ser mejorado."),
-                         # helpText("Advertencia: se ha automatizado la búsqueda de puntos de
-                         #          equilibrio con arranques aleatorios, pero falta implementar
-                         #          un control para informar sólo puntos que sean de interés en
-                         #          el problema, es decir, dentro del rango de tiempo estudiado.
-                         #          Por esta razón podrían aparecer puntos con coordenadas negativas,
-                         #          por ejemplo."),
-                         numericInput(inputId = "cifrasEq",
-                                      label = "Cantidad de decimales",
-                                      min = 0,
-                                      max = 8,
-                                      value = 2),
-                         dataTableOutput("outDataEq"),
-                         plotOutput(outputId = "planoFases", width = "80%")
-                ), # Fin panel Plano de fases
                 
                 tabPanel("Sobre el modelo",
                          includeHTML("SobreElModelo.html")
@@ -466,7 +467,7 @@ server <- function(input, output) {
                 }
             }
             rtdo <- as.data.frame(round(puntos, input$cifrasEq))
-            colnames(rtdo) <- c("Coord.X.NoInf", "Coord.Y.Inf")
+            colnames(rtdo) <- c("CelNoInf_x", "CelInf_y")
             rtdo$Clasificacion <- clases
             cbind(Punto = 1:nrow(rtdo), rtdo)
         })
@@ -478,12 +479,14 @@ server <- function(input, output) {
     # definir el campo vectorial para graficarlo despues
     flowField.aux <- reactive({
         flowField(sistema,
-                  xlim = c(0, input$nsteps),
-                  ylim = c(0, input$nsteps),
+                  xlim = c(0, input$x + input$y),
+                  ylim = c(0, input$x + input$y),
                   parameters = params(),
                   points = 40,
                   # asp = 1,
-                  add = F
+                  add = F, 
+                  xlab = "Nro de células no infectadas (x)",
+                  ylab = "Nro de células infectadas (y)"
                   )
     })
 
@@ -491,8 +494,8 @@ server <- function(input, output) {
     output$planoFases <- renderPlot({
         # Voy armando el grafico, primero el campo vectorial, luego se le agregan las nullclines y por ultimo los puntos
         flowField.aux()
-        nullclines(sistema, xlim = c(0, input$nsteps), ylim = c(0, input$nsteps), parameters = params())
-        points(puntosEq()$Coord.X.NoInf, puntosEq()$Coord.Y.Inf, pch = 19)
+        nullclines(sistema, xlim = c(0, input$x + input$y), ylim = c(0, input$x + input$y), parameters = params())
+        points(puntosEq()$CelNoInf_x, puntosEq()$CelInf_y, pch = 19)
     }, height = 400, width = 600)
 }
 
