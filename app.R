@@ -156,7 +156,7 @@ ui <- fluidPage(
             tabsetPanel(
                 
                 tabPanel("Análisis",
-                         h4("Resultados análiticos"),
+                         h4("Resultados analíticos"),
                          verbatimTextOutput(outputId = "analisis"),
                          plotOutput(outputId = "f1f2", width = "80%"),
                          h4("Resultados empíricos (arranques aleatorios)"),
@@ -177,6 +177,7 @@ ui <- fluidPage(
                                       max = 8,
                                       value = 2),
                          dataTableOutput("outDataEq"),
+                         h4("Plano de fases"),
                          plotOutput(outputId = "planoFases", width = "80%")
                          ), # Fin panel Plano de fases
 
@@ -338,6 +339,7 @@ server <- function(input, output) {
                 scale_y_continuous("Incidencia") +
                 labs(y = "Incidencia", x = "Días") +
                 theme(legend.position = "right") +
+                theme_bw() + 
                 ggtitle("Incidencia de la infección a través del tiempo")
             
         }
@@ -445,7 +447,7 @@ server <- function(input, output) {
             it <- 0
             while(encontrados < nroEq & it < 500) {
                 it = it + 1
-                y0 <-  runif(2, 0, input$nsteps)
+                y0 <-  runif(2, 0, input$nsteps) # y0 <-  runif(2, 0, nsteps)
                 eq <- findEquilibrium(sistema, parameters = params(), y0 = y0)
                 nuevo <- as.vector(eq$ystar)
                 nuevoClase <- eq$classification
@@ -482,9 +484,10 @@ server <- function(input, output) {
                   xlim = c(0, input$x + input$y),
                   ylim = c(0, input$x + input$y),
                   parameters = params(),
-                  points = 40,
+                  points = 15,
                   # asp = 1,
                   add = F, 
+                  main = "Plano de fases",
                   xlab = "Nro de células no infectadas (x)",
                   ylab = "Nro de células infectadas (y)"
                   )
@@ -496,7 +499,7 @@ server <- function(input, output) {
         flowField.aux()
         nullclines(sistema, xlim = c(0, input$x + input$y), ylim = c(0, input$x + input$y), parameters = params())
         points(puntosEq()$CelNoInf_x, puntosEq()$CelInf_y, pch = 19)
-    }, height = 400, width = 600)
+    }, height = 600, width = 600)
 }
 
 #--------------------------------------
