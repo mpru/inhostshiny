@@ -440,38 +440,44 @@ server <- function(input, output) {
         input$runMod
         isolate({
             nroEq <- analisisRtdo()$cantidad
-            encontrados <- 0
-            puntos <- matrix(NA, nrow = nroEq, ncol = 2)
-            clases <- character(nroEq)
-            ids <- character(nroEq)
-            it <- 0
-            while(encontrados < nroEq & it < 500) {
-                it = it + 1
-                y0 <-  runif(2, 0, input$nsteps) # y0 <-  runif(2, 0, nsteps)
-                eq <- findEquilibrium(sistema, parameters = params(), y0 = y0)
-                nuevo <- as.vector(eq$ystar)
-                nuevoClase <- eq$classification
-                id <- toString(round(nuevo, 2))
-                if (all(nuevo >= 0)) {
-                    if (encontrados == 0) {
-                        encontrados = encontrados + 1
-                        puntos[1, ] = nuevo
-                        clases[1] = nuevoClase
-                        ids[1] = id
-                    } else {
-                        if ((!id %in% ids)) {
+            
+            if (nroEq == 1) {
+                rtdo = data.frame(Punto = 1, CelNoInf_x = p0[1], CelInf_y = p0[2], Clasificacion = "Stable")
+            } else {
+                encontrados <- 0
+                puntos <- matrix(NA, nrow = nroEq, ncol = 2)
+                clases <- character(nroEq)
+                ids <- character(nroEq)
+                it <- 0
+                while(encontrados < nroEq & it < 500) {
+                    it = it + 1
+                    y0 <-  runif(2, 0, input$nsteps) # y0 <-  runif(2, 0, nsteps)
+                    eq <- findEquilibrium(sistema, parameters = params(), y0 = y0)
+                    nuevo <- as.vector(eq$ystar)
+                    nuevoClase <- eq$classification
+                    id <- toString(round(nuevo, 2))
+                    if (all(nuevo >= 0)) {
+                        if (encontrados == 0) {
                             encontrados = encontrados + 1
-                            puntos[encontrados, ] = nuevo
-                            clases[encontrados] = nuevoClase
-                            ids[encontrados] = id
-                        }
-                    }    
+                            puntos[1, ] = nuevo
+                            clases[1] = nuevoClase
+                            ids[1] = id
+                        } else {
+                            if ((!id %in% ids)) {
+                                encontrados = encontrados + 1
+                                puntos[encontrados, ] = nuevo
+                                clases[encontrados] = nuevoClase
+                                ids[encontrados] = id
+                            }
+                        }    
+                    }
                 }
+                rtdo <- as.data.frame(round(puntos, input$cifrasEq))
+                colnames(rtdo) <- c("CelNoInf_x", "CelInf_y")
+                rtdo$Clasificacion <- clases
+                rtdo = cbind(Punto = 1:nrow(rtdo), rtdo)
             }
-            rtdo <- as.data.frame(round(puntos, input$cifrasEq))
-            colnames(rtdo) <- c("CelNoInf_x", "CelInf_y")
-            rtdo$Clasificacion <- clases
-            cbind(Punto = 1:nrow(rtdo), rtdo)
+            rtdo
         })
     })
     output$outDataEq <- renderDataTable({

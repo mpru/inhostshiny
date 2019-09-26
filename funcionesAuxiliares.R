@@ -118,8 +118,10 @@ analisis <- function(lambda, v1, v2, mu1, mu2, K, beta, sigma, nsteps) {
     fy = fy.generador(lambda, v1, v2, mu1, mu2, K, beta, sigma) 
     # fy devuelve la coordenada en Y para los ptos de equilibrio con infeccion cronica (los x se obtienen aparte, son donde se cruzan f1 y f2)
     
+    # Que putnos de equilibrio tenemos
+    #-------------------------------------------------------------
+    
     # Punto de equilibrio libre de infeccion: raiz positiva de f1
-    #------------------------------------------------------------
     # Siempre lo puedo sacar
     # Necesito un valor inicial
     inicial = valoresCercanos2(f1, 0, 5000, 1)[1, 1]
@@ -127,11 +129,50 @@ analisis <- function(lambda, v1, v2, mu1, mu2, K, beta, sigma, nsteps) {
     x0 = raiz$x[nrow(raiz)]
     # El punto es:
     p0 = c(x0, 0)
+    
     lineas = "----------------------------------------------------------\n"
+    # Teorema 5.2.1
+    sigma0 = (4 * lambda * beta * v2^2 - ((v1 - mu1) * v2 - (v1 + K * beta) * (v2 - mu2))^2) / (4 * lambda * beta * v2 * (v1 + K * beta))
+    sigmac = (v2 / (K * beta)) - (v2 - mu2) / (beta * x0)
+    lineas = paste0(lineas, "Fracción de células infectadas que sobreviven:\n\n")
+    lineas = paste0(lineas, "sigma = ", round(sigma, 4), "\n")
+    lineas = paste0(lineas, "Límite inferior sigma_0 = ", round(sigma0, 4), "\n")
+    lineas = paste0(lineas, "Límite superior sigma_c = ", round(sigmac, 4), "\n")
+    if (0 < sigma & sigma < sigma0) {
+        cantidad = 1
+        lineas = paste0(lineas, "0 < sigma < sigma0 --> no hay puntos de equilibrio con infección crónica\n\n")
+    } else if (sigma == sigma0) {
+        cantidad = 2
+        lineas = paste0(lineas, "sigma = sigma0 --> hay un único punto de equilibrio con infección crónica\n\n")
+    } else if (sigma0 < sigma & sigma < sigmac) {
+        cantidad = 3
+        lineas = paste0(lineas, "sigma0 < sigma < sigmac --> hay dos puntos de equilibrio con infección crónica\n\n")
+    } else {
+        cantidad = 2
+        lineas = paste0(lineas, "sigma >= sigmac --> hay un único punto de equilibrio con infección crónica\n\n")
+    }
+    lineas = paste0(lineas, "----------------------------------------------------------\n")
+    
+    # Teorema 5.2.5, dinamica global
+    lineas = paste0(lineas, "Número básico de reproducción R0\n\n")
+    r0_sigma = (sigma * beta * x0 + v2 * (1 - x0 / K)) / mu2
+    r0_sigma0 = (sigma0 * beta * x0 + v2 * (1 - x0 / K)) / mu2
+    lineas = paste0(lineas, "R0 = ", round(r0_sigma, 4), "\n")
+    lineas = paste0(lineas, "R0_sigma0 = ", round(r0_sigma0, 4), "\n")
+    if (0 < r0_sigma & r0_sigma < r0_sigma0) {
+        lineas = paste0(lineas, "0 < R0(sigma) < RO(sigma0) --> El punto de equilibrio libre de infección es globalmente estable asintóticamente\n")
+    } else if (r0_sigma0 < r0_sigma & r0_sigma < 1) {
+        lineas = paste0(lineas, "R0(sigma0) < R0 < 1 --> El sistema tiene dos puntos de atracción, un punto de equilibrio libre de infección y otro de infección crónica, más un punto de equilibrio inestable (punto de silla).\n")
+    } else {
+        lineas = paste0(lineas, "R0(sigma) > 1 --> el único punto de equilibrio con infección crónica es globalmente estable asintóticamente\n")
+    }
+    lineas = paste0(lineas, "----------------------------------------------------------\n")
+    
+    
+    # Agrego a las lineas el pto de equilibrio libre de infeccion
     lineas = paste0(lineas, "Puntos de equilibrio (x, y): \n\n")
     lineas = paste0(lineas, "- Punto de equilibrio libre de infección: ", toString(round(p0, 2)), "\n") 
                     
-    
     # Puntos de equilibrio con infeccion cronica, se dan donde se cruzan f1 y f2
     #------------------------------------------------------------
     # 1. Graficar funciones
@@ -146,16 +187,17 @@ analisis <- function(lambda, v1, v2, mu1, mu2, K, beta, sigma, nsteps) {
         ggtitle("Existencia de puntos de equilibrios con infección crónica",
                 subtitle = "La o las intersecciones entre ambas curvas indican la coordenada en x de los puntos de equilibrio con infección crónica.")
 
-    # Puede tener ptos con inf cronica si se verifica 5.17
-    cond5.17 = (sigma * K * beta < v2) & (mu2 < v2)
-    # Si se cumple 5.17, seguro se cruzan f1 y f2 si se cumple 5.18:
-    cond5.18 = (v1 + beta * K)^2 * (1 - mu2 / v2)^2 > (v1 - mu1)^2 + 4 * lambda * v1 / K
-    # Se verifican?
-    verifican = cond5.17 & cond5.18
-    # cantidad = 0
     
-    # Si se cumplen 5.17 y 5.18, se cruzan seguro, entonces procedo a buscar los puntos automaticamente
-    if (verifican & sigma != 0.01) {
+    # # Puede tener ptos con inf cronica si se verifica 5.17
+    # cond5.17 = (sigma * K * beta < v2) & (mu2 < v2)
+    # # Si se cumple 5.17, seguro se cruzan f1 y f2 si se cumple 5.18:
+    # cond5.18 = (v1 + beta * K)^2 * (1 - mu2 / v2)^2 > (v1 - mu1)^2 + 4 * lambda * v1 / K
+    # # Se verifican?
+    # verifican = cond5.17 & cond5.18
+    # # cantidad = 0
+    
+    # Si hay procedo a buscar los puntos automaticamente
+    if (cantidad > 1) {
         
         lineas = paste0(lineas, "- Existen otros puntos de equilibrio con infección crónica:\n\n")
         
@@ -177,52 +219,16 @@ analisis <- function(lambda, v1, v2, mu1, mu2, K, beta, sigma, nsteps) {
             lineas = paste0(lineas, "       + Punto de equilibrio con infección crónica = ", toString(round(Pestrella[i, ], 2)), "\n")
         }
         
-    } 
-    # } else {
-    #     lineas = paste0(lineas, "- No existen otros puntos de equilibrio.\n\n")
-    #     cantidad = 1 # el de libre infeccion solo
-    # }
-    lineas = paste0(lineas, "----------------------------------------------------------\n")
-    # Ademas, si se verifian 5.17 y 5.18, podemos ver los otros rtdos
-    # Teorema 5.2.1
-    sigma0 = (4 * lambda * beta * v2^2 - ((v1 - mu1) * v2 - (v1 + K * beta) * (v2 - mu2))^2) / (4 * lambda * beta * v2 * (v1 + K * beta))
-    sigmac = (v2 / (K * beta)) - (v2 - mu2) / (beta * x0)
-    lineas = paste0(lineas, "Fracción de células infectadas que sobreviven:\n\n")
-    lineas = paste0(lineas, "sigma = ", round(sigma, 4), "\n")
-    lineas = paste0(lineas, "Límite inferior sigma_0 = ", round(sigma0, 4), "\n")
-    lineas = paste0(lineas, "Límite superior sigma_c = ", round(sigmac, 4), "\n")
-    if (0 < sigma & sigma < sigma0) {
-        # cantidad = 1
-        lineas = paste0(lineas, "0 < sigma < sigma0 --> no hay puntos de equilibrio con infección crónica\n\n")
-    } else if (sigma == sigma0) {
-        # cantidad = 2
-        lineas = paste0(lineas, "sigma = sigma0 --> hay un único punto de equilibrio con infección crónica\n\n")
-    } else if (sigma0 < sigma & sigma < sigmac) {
-        # cantidad = 3
-        lineas = paste0(lineas, "sigma0 < sigma < sigmac --> hay dos puntos de equilibrio con infección crónica\n\n")
+    # } 
     } else {
-        # cantidad = 2
-        lineas = paste0(lineas, "sigma >= sigmac --> hay un único punto de equilibrio con infección crónica\n\n")
+        lineas = paste0(lineas, "- No existen otros puntos de equilibrio.\n\n")
+        # cantidad = 1 # el de libre infeccion solo
     }
     lineas = paste0(lineas, "----------------------------------------------------------\n")
     
-    # Teorema 5.2.5, dinamica global
-    lineas = paste0(lineas, "Número básico de reproducción R0\n\n")
-    r0_sigma = (sigma * beta * x0 + v2 * (1 - x0 / K)) / mu2
-    r0_sigma0 = (sigma0 * beta * x0 + v2 * (1 - x0 / K)) / mu2
-    lineas = paste0(lineas, "R0 = ", round(r0_sigma, 4), "\n")
-    lineas = paste0(lineas, "R0_sigma0 = ", round(r0_sigma0, 4), "\n")
-    if (0 < r0_sigma & r0_sigma < r0_sigma0) {
-        lineas = paste0(lineas, "0 < R0(sigma) < RO(sigma0) --> El punto de equilibrio libre de infección es globalmente estable asintóticamente\n")
-    } else if (r0_sigma0 < r0_sigma & r0_sigma < 1) {
-        lineas = paste0(lineas, "R0(sigma0) < R0 < 1 --> El sistema tiene dos puntos de atracción, un punto de equilibrio libre de infección y otro de infección crónica, más un punto de equilibrio inestable (punto de silla).\n")
-    } else {
-        lineas = paste0(lineas, "R0(sigma) > 1 --> el único punto de equilibrio con infección crónica es globalmente estable asintóticamente\n")
-    }
-    lineas = paste0(lineas, "----------------------------------------------------------\n")
-    
-
-    return(list(g = g, lineas = lineas, cantidad = cantidad))
+    lista = list(g = g, lineas = lineas, cantidad = cantidad, p0 = p0)
+    if (cantidad > 1) lista$Pestrella = Pestrella
+    return(lista)
     
 }
 
