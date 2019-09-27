@@ -27,7 +27,7 @@ body {background:grey transparent;
 
 ## Introducción
 
-- Una **enfermedad** es *infecciosa* si el agente causante, por ejemplo, un virus o bacteria, puede ser transmitido de un individuo a otro a través de algún medio de contagio (contacto directo, vía respiratorio, madre a recién nacido, etc.).
+- Una **enfermedad** es *infecciosa* si el agente causante, por ejemplo, un virus o bacteria, puede ser transmitido de un individuo a otro a través de algún medio de contagio (contacto directo, vías respiratorias, madre a recién nacido, etc.).
 - El objetivo de la **modelización matemática** de una enfermedad infecciosa es describir el *proceso de transmisión* de la enfermedad, que se puede resumir como:
     
     1. Se introducen individuos infectados en una población susceptible --> transmisión. 
@@ -35,14 +35,14 @@ body {background:grey transparent;
     3. Individuos infectados pueden o no recuperarse y ganar cierto grado de inmunidad.
     4. Según los mecanismos en juego: *brote*, *epidemia*, *pandemia*.
 
-- La **modelización matemática** de procesos infecciosos ha sido capaz de proveer claridad sobre su transmisión y expansión, ayudando a estimar severidad y diseñar prevención.
+- La **modelización** de procesos infecciosos ha sido capaz de proveer claridad sobre su transmisión y expansión, ayudando a estimar severidad y diseñar prevención.
 
 
 --- .class #id
 
 ## Introducción
 
-- Este mismo enfoque puede aplicarse para describir la **diseminación de una infección viral en una población de células**, resultando en modelos conocidos como **in-host**.
+- Este mismo enfoque puede aplicarse para describir la **diseminación de una infección viral en una población de células**: modelos **in-host**.
 - En este trabajo se presenta una aplicación Shiny que permite estudiar el proceso infeccioso por el virus HTLV-I en células T CD4+, responsable de varias enfermedades como linfoma/leucemia y mielopatía.
 
 --- .class #id
@@ -162,7 +162,7 @@ En ausencia de infección, el número de células se espera que sea constante co
 - Permite estudiar el proceso infeccioso por el virus HTLV-I en células T CD4+.
 - Interés: llega la infección en algún momento a algún nivel de estabilidad? Se extinguirá o se expanderá? 
 - Para responder esto, la app estudia y clasifica los puntos de equilibrio $(x, y)$, que son estados en los que sistema no cambia.
-- Un equilibrio es (asintóticamente) **estable** si el sistema siempre vuelve a ese punto luego de pequeñas perturbaciones o inestable si no vuelve.
+- Un equilibrio es (asintóticamente) **estable** si el sistema siempre vuelve a ese punto luego de pequeñas perturbaciones o **inestable** si no vuelve.
 
 --- .segue bg:grey
 
