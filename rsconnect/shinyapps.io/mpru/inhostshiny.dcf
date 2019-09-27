@@ -5,6 +5,8 @@ account: mpru
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 799575
-bundleId: 2044745
+bundleId: 2448869
 url: https://mpru.shinyapps.io/inhostshiny/
-when: 1556467771.55011
+when: 1569555250.71835
+asMultiple: FALSE
+asStatic: FALSE

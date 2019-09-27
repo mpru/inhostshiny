@@ -2,6 +2,9 @@
 # Paquetes
 #--------------------------------------
 
+# Esto es porque phaseR fue dado de baja de CRAN, lo instalo desde la verison que quedo en Github
+# devtools::install_github("cran/phaseR")
+
 library(shiny)
 library(EpiModel)
 library(ggplot2)

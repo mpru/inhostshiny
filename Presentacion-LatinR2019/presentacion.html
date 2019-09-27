@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>In-Host Shiny: análisis de modelos compartimentales in-host para infecciones virales en poblaciones celulares</title>
+  <meta charset="utf-8">
+  <meta name="description" content="In-Host Shiny: análisis de modelos compartimentales in-host para infecciones virales en poblaciones celulares">
+  <meta name="author" content="Universidad Nacional de Rosario">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="libraries/widgets/quiz/css/demo.css"></link>
+<link rel=stylesheet href="libraries/widgets/bootstrap/css/bootstrap.css"></link>
+<link rel=stylesheet href="libraries/widgets/interactive/css/aceeditor.css"></link>
+<link rel=stylesheet href="libraries/widgets/nvd3/css/nv.d3.css"></link>
+<link rel=stylesheet href="libraries/widgets/nvd3/css/rNVD3.css"></link>
+<link rel=stylesheet href="libraries/widgets/leaflet/external/leaflet.css"></link>
+<link rel=stylesheet href="libraries/widgets/leaflet/external/leaflet-rCharts.css"></link>
+<link rel=stylesheet href="libraries/widgets/leaflet/external/legend.css"></link>
+<link rel=stylesheet href="./assets/css/ribbons.css"></link>
+<link rel=stylesheet href="./assets/css/style.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  <script src="libraries/widgets/nvd3/js/jquery-1.8.2.min.js"></script>
+<script src="libraries/widgets/nvd3/js/d3.v3.min.js"></script>
+<script src="libraries/widgets/nvd3/js/nv.d3.min-new.js"></script>
+<script src="libraries/widgets/nvd3/js/fisheye.js"></script>
+<script src="libraries/widgets/leaflet/external/leaflet.js"></script>
+<script src="libraries/widgets/leaflet/external/leaflet-providers.js"></script>
+<script src="libraries/widgets/leaflet/external/Control.FullScreen.js"></script>
+
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  
+  <aside class="gdbar">
+    <img src="assets/img/LOGO-UNR-NEGRO.png">
+  </aside>
+  
+  <hgroup class="auto-fadein">
+    <h1>In-Host Shiny: análisis de modelos compartimentales in-host para infecciones virales en poblaciones celulares</h1>
+    <h2>Marcos Prunello</h2>
+    <p>Universidad Nacional de Rosario<br/>@mrqtsp | github.com/mpru | marcosprunello@gmail.com</p>
+  </hgroup>
+  
+  <article></article>  
+  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="class" id="id" style="background:;">
+  
+  <article data-timings="">
+    <style type="text/css">
+body {background:grey transparent;
+}
+</style>
+
+<h2>Introducción</h2>
+
+<ul>
+<li>Una <strong>enfermedad</strong> es <em>infecciosa</em> si el agente causante, por ejemplo, un virus o bacteria, puede ser transmitido de un individuo a otro a través de algún medio de contagio (contacto directo, vía respiratorio, madre a recién nacido, etc.).</li>
+<li>El objetivo de la <strong>modelización matemática</strong> de una enfermedad infecciosa es describir el <em>proceso de transmisión</em> de la enfermedad, que se puede resumir como:</li>
+</ul>
+
+<pre><code>1. Se introducen individuos infectados en una población susceptible --&gt; transmisión. 
+2. Un individuo puede ser asintomático durante una etapa temprana. 
+3. Individuos infectados pueden o no recuperarse y ganar cierto grado de inmunidad.
+4. Según los mecanismos en juego: *brote*, *epidemia*, *pandemia*.
+</code></pre>
+
+<ul>
+<li>La <strong>modelización matemática</strong> de procesos infecciosos ha sido capaz de proveer claridad sobre su transmisión y expansión, ayudando a estimar severidad y diseñar prevención.</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  
+  <hgroup>
+    <h2>Introducción</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <ul>
+<li>Este mismo enfoque puede aplicarse para describir la <strong>diseminación de una infección viral en una población de células</strong>, resultando en modelos conocidos como <strong>in-host</strong>.</li>
+<li>En este trabajo se presenta una aplicación Shiny que permite estudiar el proceso infeccioso por el virus HTLV-I en células T CD4+, responsable de varias enfermedades como linfoma/leucemia y mielopatía.</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  
+  <hgroup>
+    <h2>Introducción</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <ul>
+<li>Organización:</li>
+</ul>
+
+<pre><code>1. Descripción de los modelos determinísticos compartimentales SIR.
+2. Adaptación de los modelos para el estudio de una población de células.
+3. Presentación de la aplicación.
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="segue" id="slide-4" style="background:grey;">
+  
+  <hgroup>
+    <h1>1. Modelos SIR</h1>
+  </hgroup>
+  
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  
+  <article data-timings="">
+    <!--
+## Modelos determinísticos compartimentales SIR
+
+- Se basan en la solución de sistemas de ecuaciones diferenciales que representan sistemas epidémicos a través del tiempo.
+- Son **determinísticos** porque las soluciones son funciones fijas de los parámetros y las condiciones iniciales, sin estudiar variabilidad existente en el proceso o población.
+- Son **compartimentales** porque particionan a la población en grupos mutuamente exclusivos que representan distintos estados de la enfermedad. Por ejemplo:
+
+    - **S**: individuos susceptibles
+    - **I**: individuos infectados
+    - **R**: individuos recuperados
+-->
+
+<h2>Modelos determinísticos compartimentales SIR</h2>
+
+<p><img src="assets/img/diagrama1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="70%" style="display: block; margin: auto;" /></p>
+
+<ul>
+<li>El objetivo de la modelización es llevar registro de las cantidades de individuos en cada compartimento en cualquier momento \(t\): \(S(t)\), \(I(t)\) y \(R(t)\). </li>
+<li>Se establece un pequeño intervalo de tiempo \([t, t+\Delta t]\) para evaluar los cambios en dichas cantidades: \(\Delta S(t)\), \(\Delta I(t)\)  y \(\Delta R(t)\).</li>
+<li>\(\Delta S(t) / \Delta t = S'(t)\) con \(\Delta t \rightarrow 0\): podemos plantear un sistema de ecuaciones diferenciales en términos de incidencia, tasa de recuperación, tasa de remoción, etc.</li>
+</ul>
+
+<!--
+Estas variaciones pueden calcularse como:
+- $\Delta S(t)$ = nuevos susceptibles + ingresos desde R - nuevas infecciones - egresos desde S
+- $\Delta I(t)$ = nuevos infectados (desde S) - egresos hacia R - egresos desde I
+- $\Delta R(t)$ = ingresos desde I - egresos hacia S - egresos desde R
+-->
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  
+  <hgroup>
+    <h2>Modelos determinísticos compartimentales SIR</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <p><img src="assets/img/diagrama2.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" width="120%" style="display: block; margin: auto;" /></p>
+
+<!--
+proportional rate assumption that the birth or death rate is proportional to the population size. 
+Here b is the natural birth rate constant, and d1, d2, and d3 are
+death rate constants for compartments S, I, and R, respectively.
+Rate constant d2 may include both natural and disease-caused
+death.
+
+Para describir los movimientos poblacionales, se deben establecer supuestos sobre las tasas de transferencias entre compartimentos. Por ejemplo:
+
+- Tasa de recuperación (o tasa de transferencia de $I$ a $R$): $\gamma I$
+- Tasa de transferencia de $R$ a $S$: $\delta R$, pensando en que los individuos recuperados tienen cierto período de inmunidad.
+- Incidencia (número de nuevas infecciones por unidad de tiempo): $\beta I S$, llamada **incidencia bilineal**. Se basa en el supuesto de que la mezcla o intercambio entre individuos es homogéneo y por lo tanto aplica la *Ley de la acción de masas*: el número de contacto depende del número de individuos en cada compartimento. $\beta$ recibe el nombre de **coeficiente de transmisión**.
+- Tasas de nacimiento, muerte, inmigración y emigración para modelar el crecimiento de la población.
+
+Para algunas enfermedades en las cuales se da un periodo de latencia entre la infección y la manifestación de los síntomas, se puede pensar en una modificación del modelo como lo muestra la siguiente figura. El compartimento de los infectados se separa en dos, el **compartimento latente** $E$ y el infeccioso $I$, y se puede también asumir que la transferencia de $E$ a $I$ es proprocional al tamaño de $E$, $\epsilon E$:
+    
+Cuando la transmisión ocurre por contacto directo entre individuos infectados y susceptibles se dice que la transmisión en **horizontal**. Sin embargo, pueden existir otros medios, como la **transmisión vertical**, cuando los patógenos pasan a un recién nacido directamente de un progenitor infectado. El siguiente diagrama muestra un modelo para una enfermedad con transmisión tanto horizontal como vertical:
+-->
+
+<!--
+--- .class #id
+
+## Modelos determinísticos compartimentales SIR
+
+- **Número básico de reproducción** $\mathbf{R}_0$: promedio de infecciones secundarias causadas por un único individuo infectado en una población enteramente susceptible durante un período infeccioso medio. 
+- $\mathbf{R}_0 < 1 \implies$ no habrá epidemia; $\mathbf{R}_0 > 1 \implies$ habrá epidemia.
+- $\mathbf{R}_0$ puede deducirse a partir del análisis de la estabilidad de los puntos de equilibrio libres de enfermedad que presente el sistema.
+-->
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="segue" id="slide-7" style="background:grey;">
+  
+  <hgroup>
+    <h1>2. Adaptación para poblaciones celulares</h1>
+  </hgroup>
+  
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  
+  <hgroup>
+    <h2>Modelo in-host para infecciones por HTLV-I en células T CD4+</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <ul>
+<li>El mismo tipo de enfoque puede aplicarse para describir la diseminación de una infección viral en una población de células: modelos <strong>in-host</strong></li>
+<li>Aplicación: análisis de la infección de células T CD4+ por el virus HTLV-I (responsable de linfoma/leucemia, mielopatía, etc.) </li>
+<li>Es un <strong>retrovirus</strong>, fuera de la célula no genera infección, requiere contacto célula a célula, se transmite verticalmente.</li>
+</ul>
+
+<!-- emplea una proteina viral para sintetizar segmentos de ADN que se integran al ADN de la célula hospedadora -->
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  
+  <hgroup>
+    <h2>Modelo in-host para infecciones por HTLV-I en células T CD4+</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <p><img src="assets/img/diagrama3.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" width="70%" style="display: block; margin: auto;" /></p>
+
+<!--
+Parametros:
+El cuerpo humano genera células T CD4+ a una tasa de λ=25 células/mm3.
+La tasa natural de muerte es μ1≈μ2≈0.03 días−1.
+En ausencia de infección, el número de células se espera que sea constante con valor normal alrededor de 1000/mm3 y una capacidad de carga constante igual a K=1150/mm3. Esto implica fijar x0≈1000/mm3, es decir, f1(1000)≈0, de lo cual se deduce una proliferación constante de v2≈v1≈0.038 día−1.
+β≈1.03×10−3mm3/célula/día.
+-->
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="segue" id="slide-10" style="background:grey;">
+  
+  <hgroup>
+    <h1>3. In-Host Shiny App</h1>
+  </hgroup>
+  
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  
+  <hgroup>
+    <h2>In-Host Shiny App</h2>
+  </hgroup>
+  
+  <article data-timings="">
+    <ul>
+<li>Permite estudiar el proceso infeccioso por el virus HTLV-I en células T CD4+.</li>
+<li>Interés: llega la infección en algún momento a algún nivel de estabilidad? Se extinguirá o se expanderá? </li>
+<li>Para responder esto, la app estudia y clasifica los puntos de equilibrio \((x, y)\), que son estados en los que sistema no cambia.</li>
+<li>Un equilibrio es (asintóticamente) <strong>estable</strong> si el sistema siempre vuelve a ese punto luego de pequeñas perturbaciones o inestable si no vuelve.</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+<slide class="segue" id="slide-12" style="background:grey;">
+  
+  <hgroup>
+    <h1>Muchas gracias</h1>
+  </hgroup>
+  
+  <article data-timings="">
+    <h3>Marcos Prunello.</h3>
+
+<h3>@mrqtsp | github.com/mpru</h3>
+
+<h3>mpru.shinyapps.io/inhostshiny</h3>
+
+  </article>
+  <!-- Presenter Notes -->
+  
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='NA'>
+         1
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Introducción'>
+         2
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Introducción'>
+         3
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='1. Modelos SIR'>
+         4
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=5 title='NA'>
+         5
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=6 title='Modelos determinísticos compartimentales SIR'>
+         6
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=7 title='2. Adaptación para poblaciones celulares'>
+         7
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=8 title='Modelo in-host para infecciones por HTLV-I en células T CD4+'>
+         8
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=9 title='Modelo in-host para infecciones por HTLV-I en células T CD4+'>
+         9
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=10 title='3. In-Host Shiny App'>
+         10
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=11 title='In-Host Shiny App'>
+         11
+      </a>
+    </li>
+    
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=12 title='Muchas gracias'>
+         12
+      </a>
+    </li>
+    
+    </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  <script src="libraries/widgets/quiz/js/jquery.quiz.js"></script>
+<script src="libraries/widgets/quiz/js/mustache.min.js"></script>
+<script src="libraries/widgets/quiz/js/quiz-app.js"></script>
+<script src="libraries/widgets/bootstrap/js/bootstrap.min.js"></script>
+<script src="libraries/widgets/bootstrap/js/bootbox.min.js"></script>
+<script src="libraries/widgets/interactive/js/ace/js/ace.js"></script>
+<script src="libraries/widgets/interactive/js/opencpu-0.5.js"></script>
+<script src="libraries/widgets/interactive/js/interactive.js"></script>
+
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  
+<script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+
+  
+  <script>  
+  $(function (){ 
+    $("#example").popover(); 
+    $("[rel='tooltip']").tooltip(); 
+  });  
+  </script>  
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
