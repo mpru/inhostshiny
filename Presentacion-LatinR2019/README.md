@@ -1,4 +1,3 @@
-# slidify_tutorial
+# Presentación de la aplicación
 
-- Basic tutorial for making decks in slidify
-- This is a work in progress
+Descargar el archivo html y abrirlo en un web broaser.
