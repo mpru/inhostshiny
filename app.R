@@ -156,6 +156,8 @@ ui <- fluidPage(
             tabsetPanel(
                 
                 tabPanel("Análisis",
+                         h4("Estabilidad de los puntos de equilibrio"),
+                         plotOutput(outputId = "estabilidad", width = "80%"),
                          h4("Resultados analíticos"),
                          verbatimTextOutput(outputId = "analisis"),
                          plotOutput(outputId = "f1f2", width = "80%"),
@@ -432,6 +434,42 @@ server <- function(input, output) {
         analisisRtdo()$g
     }, height = 400, width = 600)
     
+    output$estabilidad <- renderPlot({
+        
+        vertices = data.frame(
+            xmin = c(0, analisisRtdo()$sigma0, analisisRtdo()$sigmac),
+            xmax = c(analisisRtdo()$sigma0, analisisRtdo()$sigmac, 1),
+            ymin = rep(-1, 3),
+            ymax = rep(1, 3),
+            color = factor(1:3)
+        )
+        
+        ggplot(vertices, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = color)) +
+            geom_rect() +
+            scale_y_continuous(limits = c(-3, 3)) +
+            geom_vline(xintercept = analisisRtdo()$sigma, lty = 2) +
+            scale_x_continuous(expression(sigma), expand = c(0, 0), limits = c(0, 1)) +
+            scale_fill_manual("Estabilidad", values = c("darkgreen", "yellow", "red"), 
+                              labels = c("PE libre de infección estable. No hay PE con infección crónica.",
+                                         "PE libre de infección estable y dos PE con infección crónica, uno estable y otro inestable.",
+                                         "PE libre de infección inestable y un único punto de equilibrio con infección crónica"),
+                              guide = guide_legend(nrow = 3)) +
+            theme_bw() +
+            theme(
+                panel.grid.major = element_blank(), 
+                panel.grid.minor = element_blank(),
+                legend.position = "bottom",
+                axis.text.y = element_blank(),
+                axis.ticks.y = element_blank(),
+                legend.title=element_text(size=14), 
+                legend.text=element_text(size=14),
+                axis.title.x = element_text(size=14),
+                axis.text.x = element_text(size=14)
+                ) 
+        
+        
+    }, height = 250, width = 800)
+    
     # Analisis de equilibrio, estabilidad con el paquete phaseR
     #----------------------------------------------------------------------------
     
@@ -440,6 +478,7 @@ server <- function(input, output) {
         input$runMod
         isolate({
             nroEq <- analisisRtdo()$cantidad
+            p0 <- analisisRtdo()$p0
             
             if (nroEq == 1) {
                 rtdo = data.frame(Punto = 1, CelNoInf_x = p0[1], CelInf_y = p0[2], Clasificacion = "Stable")

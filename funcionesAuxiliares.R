@@ -226,7 +226,7 @@ analisis <- function(lambda, v1, v2, mu1, mu2, K, beta, sigma, nsteps) {
     }
     lineas = paste0(lineas, "----------------------------------------------------------\n")
     
-    lista = list(g = g, lineas = lineas, cantidad = cantidad, p0 = p0)
+    lista = list(g = g, lineas = lineas, cantidad = cantidad, p0 = p0, sigma = sigma, sigma0 = sigma0, sigmac = sigmac)
     if (cantidad > 1) lista$Pestrella = Pestrella
     return(lista)
     
